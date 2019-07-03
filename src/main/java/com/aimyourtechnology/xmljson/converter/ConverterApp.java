@@ -13,5 +13,24 @@ public class ConverterApp {
         System.out.println("kafkaBrokerPort: " + kafkaBrokerPort);
         System.out.println("inputKafkaTopic: " + inputKafkaTopic);
         System.out.println("outputKafkaTopic: " + outputKafkaTopic);
+
+        ConverterConfiguration converterConfiguration = new ConverterConfiguration();
+        converterConfiguration.appName = appName;
+        converterConfiguration.inputKafkaTopic = inputKafkaTopic;
+        converterConfiguration.outputKafkaTopic = outputKafkaTopic;
+        converterConfiguration.kafkaBrokerServer = kafkaBrokerServer;
+        converterConfiguration.kafkaBrokerPort = kafkaBrokerPort;
+
+        ConverterStream converterStream = new ConverterStream(converterConfiguration);
+
+        addShutdownHook(converterStream);
+
+        converterStream.runTopology();
     }
+
+    private static void addShutdownHook(ConverterStream converterStream) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> converterStream.shutdown()));
+    }
+
+
 }

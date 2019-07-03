@@ -73,7 +73,7 @@ public class ConverterShould {
     @AfterEach
     public void tearDown() {
         System.out.println("Kafka Logs = " + KAFKA_CONTAINER.getLogs());
-        System.out.println("Converter Logs = " + converterContainer.getLogs());
+        System.out.println("XmlJsonConverter Logs = " + converterContainer.getLogs());
     }
 
     @Test
