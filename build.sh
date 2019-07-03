@@ -20,13 +20,17 @@ do
         if [[ "${TARGET}" == "darwin" ]]
         then
           echo >&2 "Building native Image for Mac..."
-          native-image -jar ./target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar ./target/macXmlToJsonConverter
+#          native-image -H:+ReportExceptionStackTraces -H:ConfigurationFileDirectories=/Users/andy/graalOutput --no-fallback -jar ./target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar ./target/macXmlToJsonConverter
+          native-image -H:+ReportExceptionStackTraces -H:ConfigurationFileDirectories=./graalOutput --no-fallback -jar ./target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar ./target/macXmlToJsonConverter
+#          native-image -O0 -H:+ReportExceptionStackTraces -H:ConfigurationFileDirectories=/Users/andy/graalOutput --initialize-at-build-time -jar ./target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar ./target/macXmlToJsonConverter
+#          native-image -H:+ReportExceptionStackTraces -H:+ReportUnsupportedElementsAtRuntime --initialize-at-build-time --initialize-at-run-time=com.aimyourtechnology.xmljson.converter.ConverterApp --allow-incomplete-classpath -jar ./target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar ./target/macXmlToJsonConverter
           echo >&2 "Built native-image for: " $TARGET
         elif [[ "${TARGET}" == "docker" ]]
         then
           echo >&2 "Building native Image for linux on Docker..."
           docker build -f ./NativeImageDockerfile -t sns/graal-native-image-builder .
-          docker run --rm -v $PWD:/project sns/graal-native-image-builder:latest native-image -jar /project/target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar /project/target/linuxXmlToJsonConverter
+#          docker run --rm -v $PWD:/project sns/graal-native-image-builder:latest native-image -H:+ReportExceptionStackTraces -H:ConfigurationFileDirectories=/project/graalOutput --no-fallback -jar /project/target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar /project/target/linuxXmlToJsonConverter
+          docker run --rm -v $PWD:/project sns/graal-native-image-builder:latest native-image -H:+ReportExceptionStackTraces -H:ConfigurationFileDirectories=/project/graalOutput --no-server --no-fallback -jar /project/target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar /project/target/linuxXmlToJsonConverter
           echo >&2 "Built native-image for: " $TARGET
         fi
         ;;
