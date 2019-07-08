@@ -1,0 +1,3 @@
+FROM openjdk:8-jre-alpine
+
+COPY target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar /

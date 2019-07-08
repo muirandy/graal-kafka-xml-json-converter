@@ -3,11 +3,11 @@
 set -e
 
 function usage() {
-  echo >&2 "Usage: $0 [-a] (build fat jar) [-t target (darwin|docker)]"
+  echo >&2 "Usage: $0 [-f] (build fat jar) [-t target (darwin|docker)] [-i] [-j]"
 }
 
 #The colon represents an argument!
-while getopts :ft:i opt
+while getopts :ft:i:j opt
 do
   case "$opt" in
     f)
@@ -21,7 +21,7 @@ do
         then
           echo >&2 "Building native Image for Mac..."
 #          native-image -H:+ReportExceptionStackTraces -H:ConfigurationFileDirectories=/Users/andy/graalOutput --no-fallback -jar ./target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar ./target/macXmlToJsonConverter
-          native-image -H:+ReportExceptionStackTraces -H:ConfigurationFileDirectories=./graalOutput --no-fallback -jar ./target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar ./target/macXmlToJsonConverter
+          native-image -H:+ReportExceptionStackTraces -H:ConfigurationFileDirectories=/Users/andy/graalOutput --no-server --no-fallback -jar ./target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar ./target/macXmlToJsonConverter
 #          native-image -O0 -H:+ReportExceptionStackTraces -H:ConfigurationFileDirectories=/Users/andy/graalOutput --initialize-at-build-time -jar ./target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar ./target/macXmlToJsonConverter
 #          native-image -H:+ReportExceptionStackTraces -H:+ReportUnsupportedElementsAtRuntime --initialize-at-build-time --initialize-at-run-time=com.aimyourtechnology.xmljson.converter.ConverterApp --allow-incomplete-classpath -jar ./target/xmlJsonConverter-1.0-SNAPSHOT-jar-with-dependencies.jar ./target/macXmlToJsonConverter
           echo >&2 "Built native-image for: " $TARGET
@@ -39,6 +39,12 @@ do
         docker build -f ./Dockerfile -t sns/xml-json-converter .
         echo >&2 "Built image sns/xml-json-converter"
         ;;
+    j)
+        echo >&2 "Building Docker Image to run Jar on JVM..."
+        docker build -f ./JvmDockerfile -t sns/xml-json-converter-jvm .
+        echo >&2 "Built image sns/xml-json-converter-jvm"
+        ;;
+
     *)
         usage
         exit 1
